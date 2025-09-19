@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptoWallet Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .chicken {
+            transition: all 0.1s ease;
+            filter: hue-rotate(0deg) saturate(1);
+        }
+        
+        .cooking {
+            animation: sizzle 0.1s infinite alternate;
+        }
+        
+        @keyframes sizzle {
+            0% { transform: translateX(0px) rotate(0deg); }
+            100% { transform: translateX(1px) rotate(0.5deg); }
+        }
+        
+        .burned {
+            filter: brightness(0.3) saturate(0.2);
+        }
+        
+        .raw {
+            filter: hue-rotate(300deg) saturate(2) brightness(1.2);
+        }
+        
+        .perfect {
+            filter: hue-rotate(30deg) saturate(1.5) brightness(1.1);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .glass-effect {
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .mole {
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.1s ease;
+        }
+        
+        .mole:hover {
+            transform: scale(1.2);
+        }
+        
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-3px); }
+            100% { transform: translateX(0); }
+        }
+        
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        @keyframes disappear {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0); }
+        }
+        
+        .disappear {
+            animation: disappear 0.3s ease-out;
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen flex items-center justify-center p-4">
+    <div class="max-w-md w-full">
+        <!-- Wallet Balance Card -->
+        <div id="walletCard" class="glass-effect rounded-2xl p-8 mb-6 text-white">
+            <div class="text-center">
+                <h1 class="text-3xl font-bold mb-2">CryptoWallet Pro</h1>
+                <div class="text-6xl font-bold mb-4">₱<span id="balance">50,000.00</span></div>
+                <p class="text-gray-300 mb-6">Available Balance</p>
+                
+                <div class="grid grid-cols-1 gap-4 mb-6">
+                    <button id="withdrawBtn" class="bg-red-500 hover:bg-red-600 py-4 px-4 rounded-xl font-semibold transition-colors text-lg">
+                        💰 Withdraw Money
+                    </button>
+                </div>
+                
+                <div class="text-sm text-gray-300">
+                    <p>🔒 Ultra-Secure Withdrawal System</p>
+                    <p class="text-xs mt-1">Multiple security layers required</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Withdrawal Form -->
+        <div id="withdrawForm" class="glass-effect rounded-2xl p-8 text-white hidden">
+            <h2 class="text-2xl font-bold mb-6">💸 Withdraw Money</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-2">Bank Account Number</label>
+                    <input id="bankAccount" type="text" class="w-full bg-white/20 rounded-lg px-4 py-3 text-white placeholder-gray-300 border border-white/30 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter 12-digit account number">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Withdrawal Amount (₱)</label>
+                    <select id="withdrawAmount" class="w-full bg-white/20 rounded-lg px-4 py-3 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Select amount</option>
+                        <option value="1000">₱1,000</option>
+                        <option value="5000">₱5,000</option>
+                        <option value="10000">₱10,000</option>
+                        <option value="25000">₱25,000</option>
+                        <option value="50000">₱50,000 (All)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Processing Fee</label>
+                    <select id="processingFee" class="w-full bg-white/20 rounded-lg px-4 py-3 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Choose processing speed</option>
+                        <option value="standard">Standard (₱50) - 3-5 days</option>
+                        <option value="express">Express (₱150) - 1-2 days</option>
+                        <option value="instant">Instant (₱500) - Within 1 hour</option>
+                        <option value="premium">Premium VIP (₱1,000) - Within 15 minutes</option>
+                    </select>
+                </div>
+                <button id="proceedBtn" class="w-full bg-orange-500 hover:bg-orange-600 py-3 px-4 rounded-xl font-semibold transition-colors">
+                    🔐 Proceed to Security Verification
+                </button>
+                <button id="backBtn" class="w-full bg-gray-500 hover:bg-gray-600 py-3 px-4 rounded-xl font-semibold transition-colors">
+                    ← Back to Wallet
+                </button>
+            </div>
+        </div>
+        
+        <!-- Easy Captcha -->
+        <div id="easyCaptcha" class="glass-effect rounded-2xl p-8 text-white hidden">
+            <h2 class="text-2xl font-bold mb-6">🔒 Security Check Level 1</h2>
+            <p class="text-gray-300 mb-4">Please solve this simple math problem:</p>
+            <div class="text-center">
+                <div class="text-3xl font-bold mb-4" id="mathProblem">3 + 5 = ?</div>
+                <input type="number" id="mathAnswer" class="w-32 bg-white/20 rounded-lg px-4 py-3 text-white text-center border border-white/30 focus:outline-none focus:ring-2 focus:ring-blue-500 text-xl font-bold" placeholder="?">
+                <div class="mt-4">
+                    <button id="submitMath" class="bg-green-500 hover:bg-green-600 py-3 px-6 rounded-xl font-semibold transition-colors mr-2">
+                        ✓ Submit
+                    </button>
+                    <button id="cancelTransaction" class="bg-red-500 hover:bg-red-600 py-3 px-6 rounded-xl font-semibold transition-colors">
+                        ✗ Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Task Selection -->
+        <div id="taskSelection" class="glass-effect rounded-2xl p-8 text-white hidden">
+            <h2 class="text-2xl font-bold mb-6">🎯 Security Challenge Selection</h2>
+            <p class="text-gray-300 mb-6">Choose your verification method:</p>
+            
+            <div class="space-y-3">
+                <button id="selectChicken" class="w-full bg-red-500 hover:bg-red-600 py-4 px-4 rounded-xl font-semibold transition-colors text-left">
+                    🐔 <strong>Chicken Cooking Master</strong><br>
+                    <span class="text-sm text-red-200">Cook chicken for exactly 6.000 seconds</span>
+                </button>
+                
+                <button id="selectWhackMole" class="w-full bg-green-500 hover:bg-green-600 py-4 px-4 rounded-xl font-semibold transition-colors text-left">
+                    🔨 <strong>Whack-A-Mole Pro</strong><br>
+                    <span class="text-sm text-green-200">Hit exactly 10 moles in 15 seconds</span>
+                </button>
+                
+                <button id="selectColorMatch" class="w-full bg-purple-500 hover:bg-purple-600 py-4 px-4 rounded-xl font-semibold transition-colors text-left">
+                    🌈 <strong>Perfect Color Matcher</strong><br>
+                    <span class="text-sm text-purple-200">Match RGB values within 0.1% accuracy</span>
+                </button>
+                
+                <button id="selectMemory" class="w-full bg-blue-500 hover:bg-blue-600 py-4 px-4 rounded-xl font-semibold transition-colors text-left">
+                    🧠 <strong>Photographic Memory Test</strong><br>
+                    <span class="text-sm text-blue-200">Memorize 20 random numbers in order</span>
+                </button>
+                
+                <button id="selectReflexes" class="w-full bg-yellow-500 hover:bg-yellow-600 py-4 px-4 rounded-xl font-semibold transition-colors text-left">
+                    ⚡ <strong>Lightning Reflexes</strong><br>
+                    <span class="text-sm text-yellow-200">Click the moving target 15 times in a row</span>
+                </button>
+            </div>
+            
+            <div class="mt-6 text-center">
+                <button id="randomTask" class="bg-gradient-to-r from-pink-500 to-violet-500 hover:from-pink-600 hover:to-violet-600 py-3 px-6 rounded-xl font-semibold transition-colors">
+                    🎲 Feeling Lucky? Random Challenge!
+                </button>
+            </div>
+        </div>
+        
+        <!-- Chicken Cooking Challenge -->
+        <div id="chickenTask" class="glass-effect rounded-2xl p-8 text-white hidden">
+            <h2 class="text-2xl font-bold mb-4">🐔 Chicken Cooking Master</h2>
+            <p class="text-gray-300 mb-4">Cook the perfect chicken! Must be cooked for EXACTLY 6.000 seconds!</p>
+            
+            <div class="text-center mb-6">
+                <div id="chicken" class="text-6xl mx-auto mb-4">🐔</div>
+                <div class="text-sm text-gray-300 mb-2">Status: <span id="cookStatus" class="font-bold text-yellow-400">RAW</span></div>
+                <div class="text-sm text-gray-300 mb-4">Time: <span id="cookTime" class="font-bold">0.000s</span></div>
+                
+                <div class="mb-4">
+                    <button id="startCooking" class="bg-red-500 hover:bg-red-600 py-3 px-6 rounded-xl font-semibold transition-colors mr-2">
+                        🔥 Start Cooking
+                    </button>
+                    <button id="stopCooking" class="bg-blue-500 hover:bg-blue-600 py-3 px-6 rounded-xl font-semibold transition-colors" disabled>
+                        ⏹️ Stop Cooking
+                    </button>
+                </div>
+                
+                <div class="grid grid-cols-3 gap-2 mb-4">
+                    <button class="bg-purple-500 hover:bg-purple-600 py-2 px-3 rounded-lg font-semibold text-xs transition-colors" onclick="addDistraction('salt')">
+                        🧂 Add Salt
+                    </button>
+                    <button class="bg-yellow-500 hover:bg-yellow-600 py-2 px-3 rounded-lg font-semibold text-xs transition-colors" onclick="addDistraction('pepper')">
+                        🌶️ Add Pepper  
+                    </button>
+                    <button class="bg-green-500 hover:bg-green-600 py-2 px-3 rounded-lg font-semibold text-xs transition-colors" onclick="addDistraction('flip')">
+                        🔄 Flip Chicken
+                    </button>
+                    <button class="bg-orange-500 hover:bg-orange-600 py-2 px-3 rounded-lg font-semibold text-xs transition-colors" onclick="addDistraction('oil')">
+                        🫒 Add Oil
+                    </button>
+                    <button class="bg-pink-500 hover:bg-pink-600 py-2 px-3 rounded-lg font-semibold text-xs transition-colors" onclick="addDistraction('garlic')">
+                        🧄 Add Garlic
+                    </button>
+                    <button class="bg-indigo-500 hover:bg-indigo-600 py-2 px-3 rounded-lg font-semibold text-xs transition-colors" onclick="addDistraction('temp')">
+                        🌡️ Check Temp
+                    </button>
+                </div>
+                
+                <button id="submitChicken" class="w-full bg-green-500 hover:bg-green-600 py-3 px-4 rounded-xl font-semibold transition-colors" disabled>
+                    ✓ Submit Perfect Chicken
+                </button>
+            </div>
+        </div>
+        
+        <!-- Whack-A-Mole Challenge -->
+        <div id="whackMoleTask" class="glass-effect rounded-2xl p-8 text-white hidden">
+            <h2 class="text-2xl font-bold mb-4">🔨 Whack-A-Mole Pro</h2>
+            <p class="text-gray-300 mb-4">Hit exactly 10 moles in 15 seconds. No more, no less!</p>
+            
+            <div class="text-center mb-4">
+                <div class="text-lg mb-2">Score: <span id="moleScore" class="font-bold text-green-400">0</span>/10</div>
+                <div class="text-lg mb-4">Time: <span id="moleTimer" class="font-bold text-blue-400">15</span>s</div>
+                
+                <div id="moleGrid" class="grid grid-cols-3 gap-3 mb-4 max-w-xs mx-auto">
+                    <!-- Mole holes will be generated here -->
+                </div>
+                
+                <button id="startWhackMole" class="bg-green-500 hover:bg-green-600 py-3 px-6 rounded-xl font-semibold transition-colors">
+                    🎯 Start Game
+                </button>
+            </div>
+        </div>
+        
+        <!-- Color Matching Challenge -->
+        <div id="colorTask" class="glass-effect rounded-2xl p-8 text-white hidden">
+            <h2 class="text-2xl font-bold mb-4">🌈 Perfect Color Matcher</h2>
+            <p class="text-gray-300 mb-4">Match the target color EXACTLY using RGB sliders!</p>
+            
+            <div class="text-center mb-6">
+                <div class="mb-4">
+                    <p class="text-sm text-gray-300 mb-2">Target Color:</p>
+                    <div id="targetColor" class="w-24 h-24 mx-auto rounded-lg border-2 border-white/30 mb-2"></div>
+                    <div id="targetRGB" class="text-sm font-mono text-gray-300"></div>
+                </div>
+                
+                <div class="mb-4">
+                    <p class="text-sm text-gray-300 mb-2">Your Color:</p>
+                    <div id="yourColor" class="w-24 h-24 mx-auto rounded-lg border-2 border-white/30 mb-2" style="background: rgb(0,0,0)"></div>
+                    <div id="yourRGB" class="text-sm font-mono text-gray-300">RGB(0, 0, 0)</div>
+                </div>
+                
+                <div class="space-y-3 mb-4">
+                    <div>
+                        <label class="text-sm text-red-300">Red: <span id="redValue">0</span></label>
+                        <input type="range" id="redSlider" min="0" max="255" value="0" class="w-full">
+                    </div>
+                    <div>
+                        <label class="text-sm text-green-300">Green: <span id="greenValue">0</span></label>
+                        <input type="range" id="greenSlider" min="0" max="255" value="0" class="w-full">
+                    </div>
+                    <div>
+                        <label class="text-sm text-blue-300">Blue: <span id="blueValue">0</span></label>
+                        <input type="range" id="blueSlider" min="0" max="255" value="0" class="w-full">
+                    </div>
+                </div>
+                
+                <div class="text-sm text-gray-300 mb-4">
+                    Accuracy: <span id="colorAccuracy" class="font-bold text-yellow-400">0%</span>
+                    <br><span class="text-xs">(Need 99.9% accuracy to pass)</span>
+                </div>
+                
+                <button id="submitColor" class="w-full bg-green-500 hover:bg-green-600 py-3 px-4 rounded-xl font-semibold transition-colors">
+                    ✓ Submit Color Match
+                </button>
+            </div>
+        </div>
+        
+        <!-- Memory Challenge -->
+        <div id="memoryTask" class="glass-effect rounded-2xl p-8 text-white hidden">
+            <h2 class="text-2xl font-bold mb-4">🧠 Photographic Memory Test</h2>
+            <p class="text-gray-300 mb-4">Memorize these 20 numbers in exact order. You have 10 seconds!</p>
+            
+            <div class="text-center">
+                <div id="memoryNumbers" class="grid grid-cols-5 gap-2 mb-4 text-2xl font-bold">
+                    <!-- Numbers will be generated here -->
+                </div>
+                
+                <div id="memoryTimer" class="text-xl font-bold mb-4 text-yellow-400">Ready?</div>
+                
+                <div id="memoryInput" class="hidden mb-4">
+                    <p class="text-sm text-gray-300 mb-2">Enter the numbers in order (separated by spaces):</p>
+                    <input type="text" id="memoryAnswer" class="w-full bg-white/20 rounded-lg px-4 py-3 text-white text-center border border-white/30 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter numbers here...">
+                </div>
+                
+                <button id="startMemory" class="bg-blue-500 hover:bg-blue-600 py-3 px-6 rounded-xl font-semibold transition-colors">
+                    🧠 Start Memory Test
+                </button>
+                
+                <button id="submitMemory" class="w-full bg-green-500 hover:bg-green-600 py-3 px-4 rounded-xl font-semibold transition-colors hidden">
+                    ✓ Submit Answer
+                </button>
+            </div>
+        </div>
+        
+        <!-- Common Elements -->
+        <div id="taskButtons" class="text-center mt-4 hidden">
+            <button id="tryAgain" class="bg-yellow-500 hover:bg-yellow-600 py-2 px-4 rounded-xl font-semibold transition-colors mr-2 hidden">
+                🔄 Try Again
+            </button>
+            <button id="chooseAnother" class="bg-purple-500 hover:bg-purple-600 py-2 px-4 rounded-xl font-semibold transition-colors mr-2">
+                🎯 Choose Another Task
+            </button>
+            <button id="giveUpBtn" class="bg-red-500 hover:bg-red-600 py-2 px-4 rounded-xl font-semibold transition-colors">
+                🏳️ Give Up
+            </button>
+        </div>
+        
+        <div id="failureMessage" class="glass-effect rounded-2xl p-6 text-white text-center mt-4 hidden">
+            <p class="font-bold text-red-400">❌ Challenge Failed!</p>
+            <p id="failReason" class="text-sm text-gray-300 mt-2"></p>
+        </div>
+        
+        <!-- Success Message -->
+        <div id="successMessage" class="glass-effect rounded-2xl p-8 text-white text-center hidden">
+            <div class="text-6xl mb-4">🎉</div>
+            <h2 class="text-2xl font-bold mb-4">IMPOSSIBLE! YOU'RE A LEGEND!</h2>
+            <p class="text-gray-300 mb-4">Congratulations! Your withdrawal request has been processed.</p>
+            <div class="text-green-400 font-bold mb-2">Withdrawal ID: WDL-MIRACLE-001</div>
+            <div class="text-sm text-gray-300">Processing fee deducted. Funds will arrive as promised.</div>
+            <button id="homeBtn" class="mt-6 bg-blue-500 hover:bg-blue-600 py-3 px-6 rounded-xl font-semibold transition-colors">
+                🏠 Back to Wallet
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        let cookingTimer;
+        let cookingStartTime;
+        let currentCookTime = 0;
+        let attempts = 0;
+        let currentTask = '';
+        
+        // Game state variables
+        let moleTimer, moleScore = 0, moleTimeLeft = 15, moleGameActive = false;
+        let targetR, targetG, targetB;
+        let memoryNumbers = [];
+        let memoryShowTime = 10;
+        
+        // Navigation
+        document.getElementById('withdrawBtn').addEventListener('click', () => showScreen('withdrawForm'));
+        document.getElementById('backBtn').addEventListener('click', () => showScreen('walletCard'));
+        document.getElementById('proceedBtn').addEventListener('click', validateForm);
+        document.getElementById('cancelTransaction').addEventListener('click', () => showScreen('walletCard'));
+        document.getElementById('homeBtn').addEventListener('click', () => {
+            showScreen('walletCard');
+            resetAllGames();
+        });
+        document.getElementById('giveUpBtn').addEventListener('click', () => showScreen('walletCard'));
+        document.getElementById('chooseAnother').addEventListener('click', () => showScreen('taskSelection'));
+        document.getElementById('tryAgain').addEventListener('click', retryCurrentTask);
+        
+        // Task selection
+        document.getElementById('selectChicken').addEventListener('click', () => selectTask('chicken'));
+        document.getElementById('selectWhackMole').addEventListener('click', () => selectTask('whackMole'));
+        document.getElementById('selectColorMatch').addEventListener('click', () => selectTask('color'));
+        document.getElementById('selectMemory').addEventListener('click', () => selectTask('memory'));
+        document.getElementById('selectReflexes').addEventListener('click', () => alert('Coming soon! This task is so hard we\'re still coding it! 😅'));
+        document.getElementById('randomTask').addEventListener('click', () => {
+            const tasks = ['chicken', 'whackMole', 'color', 'memory'];
+            const randomTask = tasks[Math.floor(Math.random() * tasks.length)];
+            selectTask(randomTask);
+        });
+        
+        function showScreen(screenId) {
+            const screens = ['walletCard', 'withdrawForm', 'easyCaptcha', 'taskSelection', 'chickenTask', 'whackMoleTask', 'colorTask', 'memoryTask', 'successMessage'];
+            screens.forEach(screen => {
+                document.getElementById(screen).classList.add('hidden');
+            });
+            document.getElementById(screenId).classList.remove('hidden');
+            
+            // Show/hide task buttons
+            const taskScreens = ['chickenTask', 'whackMoleTask', 'colorTask', 'memoryTask'];
+            if (taskScreens.includes(screenId)) {
+                document.getElementById('taskButtons').classList.remove('hidden');
+            } else {
+                document.getElementById('taskButtons').classList.add('hidden');
+            }
+        }
+        
+        function validateForm() {
+            const bankAccount = document.getElementById('bankAccount').value;
+            const amount = document.getElementById('withdrawAmount').value;
+            const fee = document.getElementById('processingFee').value;
+            
+            if (!bankAccount || bankAccount.length !== 12) {
+                alert('Please enter a valid 12-digit bank account number.');
+                return;
+            }
+            if (!amount) {
+                alert('Please select withdrawal amount.');
+                return;
+            }
+            if (!fee) {
+                alert('Please select processing fee option.');
+                return;
+            }
+            
+            showScreen('easyCaptcha');
+        }
+        
+        // Easy Captcha
+        document.getElementById('submitMath').addEventListener('click', () => {
+            const answer = parseInt(document.getElementById('mathAnswer').value);
+            if (answer === 8) {
+                showScreen('taskSelection');
+            } else {
+                alert('Wrong answer! Try again. (Hint: 3 + 5 = ?)');
+            }
+        });
+        
+        function selectTask(task) {
+            currentTask = task;
+            showScreen(task + 'Task');
+            initializeTask(task);
+        }
+        
+        function initializeTask(task) {
+            switch(task) {
+                case 'chicken':
+                    resetChicken();
+                    break;
+                case 'whackMole':
+                    initWhackMole();
+                    break;
+                case 'color':
+                    initColorMatch();
+                    break;
+                case 'memory':
+                    initMemoryTest();
+                    break;
+            }
+        }
+        
+        function retryCurrentTask() {
+            document.getElementById('failureMessage').classList.add('hidden');
+            document.getElementById('tryAgain').classList.add('hidden');
+            initializeTask(currentTask);
+        }
+        
+        // =================
+        // CHICKEN COOKING
+        // =================
+        document.getElementById('startCooking').addEventListener('click', startCooking);
+        document.getElementById('stopCooking').addEventListener('click', stopCooking);
+        document.getElementById('submitChicken').addEventListener('click', submitChicken);
+        
+        function startCooking() {
+            const chicken = document.getElementById('chicken');
+            const startBtn = document.getElementById('startCooking');
+            const stopBtn = document.getElementById('stopCooking');
+            
+            startBtn.disabled = true;
+            stopBtn.disabled = false;
+            document.getElementById('submitChicken').disabled = true;
+            
+            chicken.classList.add('cooking');
+            chicken.classList.remove('raw', 'perfect', 'burned');
+            
+            cookingStartTime = Date.now();
+            
+            cookingTimer = setInterval(() => {
+                currentCookTime = (Date.now() - cookingStartTime) / 1000;
+                document.getElementById('cookTime').textContent = currentCookTime.toFixed(3) + 's';
+                
+                // Add random micro-delays
+                if (Math.random() < 0.15) {
+                    const delay = Math.random() * 100;
+                    setTimeout(() => {}, delay);
+                }
+                
+                updateChickenStatus();
+                
+                if (currentCookTime > 8) {
+                    stopCooking();
+                }
+            }, Math.random() * 25 + 8);
+        }
+        
+        function stopCooking() {
+            clearInterval(cookingTimer);
+            
+            const chicken = document.getElementById('chicken');
+            const startBtn = document.getElementById('startCooking');
+            const stopBtn = document.getElementById('stopCooking');
+            const submitBtn = document.getElementById('submitChicken');
+            
+            chicken.classList.remove('cooking');
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+            submitBtn.disabled = false;
+        }
+        
+        function updateChickenStatus() {
+            const chicken = document.getElementById('chicken');
+            
+            if (currentCookTime < 2.5) {
+                document.getElementById('cookStatus').textContent = 'RAW';
+                chicken.classList.add('raw');
+                chicken.classList.remove('perfect', 'burned');
+            } else if (currentCookTime < 5.98) {
+                document.getElementById('cookStatus').textContent = 'UNDERDONE';
+                chicken.classList.add('raw');
+                chicken.classList.remove('perfect', 'burned');
+            } else if (currentCookTime >= 5.98 && currentCookTime <= 6.02) {
+                document.getElementById('cookStatus').textContent = 'PERFECT!';
+                chicken.classList.add('perfect');
+                chicken.classList.remove('raw', 'burned');
+            } else {
+                document.getElementById('cookStatus').textContent = 'BURNED!';
+                chicken.classList.add('burned');
+                chicken.classList.remove('raw', 'perfect');
+            }
+        }
+        
+        function submitChicken() {
+            attempts++;
+            
+            if (currentCookTime >= 5.995 && currentCookTime <= 6.005) {
+                if (Math.random() < 0.97) {
+                    const evilReasons = [
+                        'not evenly cooked (internal temperature varies by 0.05°C)',
+                        'cooked at wrong atmospheric pressure (must be exactly 1013.25 hPa)',
+                        'seasoning was added in incorrect sequence',
+                        'chicken needs to rest for exactly 1.73 seconds after cooking',
+                        'cosmic microwave background radiation interfered',
+                        'your mouse click created electromagnetic interference',
+                        'chicken was not rotated counterclockwise during cooking',
+                        'ambient humidity was 0.2% off optimal cooking conditions',
+                        'your screen brightness affected cooking temperature calculation'
+                    ];
+                    
+                    showFailure(evilReasons[Math.floor(Math.random() * evilReasons.length)]);
+                    return;
+                }
+                
+                showScreen('successMessage');
+            } else {
+                let reason;
+                if (currentCookTime < 5.99) {
+                    reason = `undercooked (${currentCookTime.toFixed(3)}s - needs exactly 6.000s)`;
+                } else if (currentCookTime > 6.01) {
+                    reason = `overcooked (${currentCookTime.toFixed(3)}s - needs exactly 6.000s)`;
+                } else {
+                    reason = `almost perfect but timing was ${currentCookTime.toFixed(3)}s (need exactly 6.000s)`;
+                }
+                showFailure(reason);
+            }
+        }
+        
+        function resetChicken() {
+            currentCookTime = 0;
+            document.getElementById('cookTime').textContent = '0.000s';
+            document.getElementById('cookStatus').textContent = 'RAW';
+            document.getElementById('chicken').className = 'text-6xl mx-auto mb-4';
+            document.getElementById('submitChicken').disabled = true;
+            clearInterval(cookingTimer);
+        }
+        
+        function addDistraction(type) {
+            const distractions = {
+                'salt': 'Salt added! (Sodium levels: optimal)',
+                'pepper': 'Pepper added! (Spice level: perfect)', 
+                'flip': 'Chicken flipped! (Browning: even)',
+                'oil': 'Oil added! (Fat content: ideal)',
+                'garlic': 'Garlic added! (Flavor enhanced)',
+                'temp': 'Temperature checked! (Reading: 165°F)'
+            };
+            
+            const statusEl = document.getElementById('cookStatus');
+            const originalText = statusEl.textContent;
+            const originalClass = statusEl.className;
+            
+            statusEl.textContent = distractions[type];
+            statusEl.className = 'font-bold text-blue-400';
+            
+            setTimeout(() => {
+                statusEl.textContent = originalText;
+                statusEl.className = originalClass;
+            }, 1500);
+        }
+        
+        // =================
+        // WHACK-A-MOLE
+        // =================
+        document.getElementById('startWhackMole').addEventListener('click', startWhackMole);
+        
+        function initWhackMole() {
+            moleScore = 0;
+            moleTimeLeft = 15;
+            moleGameActive = false;
+            document.getElementById('moleScore').textContent = moleScore;
+            document.getElementById('moleTimer').textContent = moleTimeLeft;
+            
+            // Create mole grid
+            const grid = document.getElementById('moleGrid');
+            grid.innerHTML = '';
+            for (let i = 0; i < 9; i++) {
+                const hole = document.createElement('div');
+                hole.className = 'bg-black/50 rounded-full w-16 h-16 flex items-center justify-center text-2xl cursor-pointer border-2 border-brown-600';
+                hole.id = `hole-${i}`;
+                hole.innerHTML = '🕳️';
+                grid.appendChild(hole);
+            }
+        }
+        
+        function startWhackMole() {
+            moleGameActive = true;
+            moleScore = 0;
+            moleTimeLeft = 15;
+            document.getElementById('startWhackMole').disabled = true;
+            
+            const timer = setInterval(() => {
+                moleTimeLeft--;
+                document.getElementById('moleTimer').textContent = moleTimeLeft;
+                
+                if (moleTimeLeft <= 0) {
+                    clearInterval(timer);
+                    endWhackMole();
+                }
+            }, 1000);
+            
+            spawnMoles();
+        }
+        
+        function spawnMoles() {
+            if (!moleGameActive) return;
+            
+            // Clear all holes
+            for (let i = 0; i < 9; i++) {
+                const hole = document.getElementById(`hole-${i}`);
+                hole.innerHTML = '🕳️';
+                hole.onclick = null;
+            }
+            
+            // Spawn 1-3 moles randomly
+            const numMoles = Math.floor(Math.random() * 3) + 1;
+            const positions = [];
+            
+            for (let i = 0; i < numMoles; i++) {
+                let pos;
+                do {
+                    pos = Math.floor(Math.random() * 9);
+                } while (positions.includes(pos));
+                positions.push(pos);
+                
+                const hole = document.getElementById(`hole-${pos}`);
+                hole.innerHTML = '🐭';
+                hole.onclick = () => hitMole(hole, pos);
+            }
+            
+            // Hide moles after random time
+            setTimeout(() => {
+                for (let pos of positions) {
+                    const hole = document.getElementById(`hole-${pos}`);
+                    if (hole.innerHTML === '🐭') {
+                        hole.innerHTML = '🕳️';
+                        hole.onclick = null;
+                    }
+                }
+                spawnMoles(); // Spawn next round
+            }, Math.random() * 800 + 400);
+        }
+        
+        function hitMole(hole, pos) {
+            if (hole.innerHTML === '🐭') {
+                moleScore++;
+                document.getElementById('moleScore').textContent = moleScore;
+                hole.innerHTML = '💥';
+                hole.onclick = null;
+                
+                // Add shake effect
+                hole.classList.add('shake');
+                setTimeout(() => hole.classList.remove('shake'), 500);
+                
+                if (moleScore > 10) {
+                    // Punish for hitting too many
+                    endWhackMole();
+                    showFailure('You hit too many moles! Need exactly 10, not more!');
+                }
+            }
+        }
+        
+        function endWhackMole() {
+            moleGameActive = false;
+            document.getElementById('startWhackMole').disabled = false;
+            
+            if (moleScore === 10) {
+                // Still make it nearly impossible
+                if (Math.random() < 0.95) {
+                    const reasons = [
+                        'timing was 0.003 seconds off perfect rhythm',
+                        'you hit the moles in wrong order (must be clockwise)',
+                        'mouse acceleration was not set to exactly 1.0x',
+                        'screen refresh rate caused timing desync',
+                        'you blinked during one of the hits',
+                        'lunar phase is not optimal for mole whacking'
+                    ];
+                    showFailure(reasons[Math.floor(Math.random() * reasons.length)]);
+                } else {
+                    showScreen('successMessage');
+                }
+            } else if (moleScore < 10) {
+                showFailure(`Only hit ${moleScore} moles. Need exactly 10!`);
+            }
+        }
+        
+        // =================
+        // COLOR MATCHING
+        // =================
+        function initColorMatch() {
+            // Generate random target color
+            targetR = Math.floor(Math.random() * 256);
+            targetG = Math.floor(Math.random() * 256);
+            targetB = Math.floor(Math.random() * 256);
+            
+            document.getElementById('targetColor').style.background = `rgb(${targetR}, ${targetG}, ${targetB})`;
+            document.getElementById('targetRGB').textContent = `RGB(${targetR}, ${targetG}, ${targetB})`;
+            
+            // Reset sliders
+            document.getElementById('redSlider').value = 0;
+            document.getElementById('greenSlider').value = 0;
+            document.getElementById('blueSlider').value = 0;
+            updateColorSliders();
+            
+            // Add event listeners
+            document.getElementById('redSlider').oninput = updateColorSliders;
+            document.getElementById('greenSlider').oninput = updateColorSliders;
+            document.getElementById('blueSlider').oninput = updateColorSliders;
+        }
+        
+        document.getElementById('submitColor').addEventListener('click', submitColor);
+        
+        function updateColorSliders() {
+            const r = document.getElementById('redSlider').value;
+            const g = document.getElementById('greenSlider').value;
+            const b = document.getElementById('blueSlider').value;
+            
+            document.getElementById('redValue').textContent = r;
+            document.getElementById('greenValue').textContent = g;
+            document.getElementById('blueValue').textContent = b;
+            document.getElementById('yourColor').style.background = `rgb(${r}, ${g}, ${b})`;
+            document.getElementById('yourRGB').textContent = `RGB(${r}, ${g}, ${b})`;
+            
+            // Calculate accuracy
+            const diffR = Math.abs(targetR - r);
+            const diffG = Math.abs(targetG - g);
+            const diffB = Math.abs(targetB - b);
+            const totalDiff = diffR + diffG + diffB;
+            const maxDiff = 255 * 3;
+            const accuracy = ((maxDiff - totalDiff) / maxDiff * 100);
+            
+            document.getElementById('colorAccuracy').textContent = accuracy.toFixed(1) + '%';
+        }
+        
+        function submitColor() {
+            const r = parseInt(document.getElementById('redSlider').value);
+            const g = parseInt(document.getElementById('greenSlider').value);
+            const b = parseInt(document.getElementById('blueSlider').value);
+            
+            const diffR = Math.abs(targetR - r);
+            const diffG = Math.abs(targetG - g);
+            const diffB = Math.abs(targetB - b);
+            
+            if (diffR <= 0 && diffG <= 0 && diffB <= 0) {
+                if (Math.random() < 0.98) {
+                    const reasons = [
+                        'color calibration of your monitor is 0.01% off',
+                        'ambient lighting affected color perception',
+                        'RGB values must be submitted in hexadecimal format',
+                        'color matching requires gamma correction of 2.2',
+                        'your eyes adjusted to the screen brightness incorrectly',
+                        'color temperature of room lighting is non-standard'
+                    ];
+                    showFailure(reasons[Math.floor(Math.random() * reasons.length)]);
+                } else {
+                    showScreen('successMessage');
+                }
+            } else {
+                showFailure(`Color mismatch! Red: ${diffR > 0 ? 'off by ' + diffR : 'perfect'}, Green: ${diffG > 0 ? 'off by ' + diffG : 'perfect'}, Blue: ${diffB > 0 ? 'off by ' + diffB : 'perfect'}`);
+            }
+        }
+        
+        // =================
+        // MEMORY TEST
+        // =================
+        document.getElementById('startMemory').addEventListener('click', startMemoryTest);
+        document.getElementById('submitMemory').addEventListener('click', submitMemory);
+        
+        function initMemoryTest() {
+            memoryNumbers = [];
+            for (let i = 0; i < 20; i++) {
+                memoryNumbers.push(Math.floor(Math.random() * 99) + 1);
+            }
+            
+            const grid = document.getElementById('memoryNumbers');
+            grid.innerHTML = '';
+            memoryNumbers.forEach(num => {
+                const div = document.createElement('div');
+                div.className = 'bg-white/20 rounded p-2';
+                div.textContent = num;
+                grid.appendChild(div);
+            });
+            
+            document.getElementById('memoryInput').classList.add('hidden');
+            document.getElementById('submitMemory').classList.add('hidden');
+            document.getElementById('startMemory').classList.remove('hidden');
+            document.getElementById('memoryTimer').textContent = 'Ready?';
+        }
+        
+        function startMemoryTest() {
+            document.getElementById('startMemory').classList.add('hidden');
+            let timeLeft = 10;
+            
+            const timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('memoryTimer').textContent = `Memorize: ${timeLeft}s`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    // Hide numbers
+                    document.getElementById('memoryNumbers').innerHTML = '<div class="col-span-5 text-gray-400">Numbers hidden!</div>';
+                    document.getElementById('memoryTimer').textContent = 'Enter the numbers:';
+                    document.getElementById('memoryInput').classList.remove('hidden');
+                    document.getElementById('submitMemory').classList.remove('hidden');
+                }
+            }, 1000);
+        }
+        
+        function submitMemory() {
+            const answer = document.getElementById('memoryAnswer').value.trim();
+            const userNumbers = answer.split(/\s+/).map(num => parseInt(num)).filter(num => !isNaN(num));
+            
+            if (userNumbers.length !== 20) {
+                showFailure(`You entered ${userNumbers.length} numbers. Need exactly 20 numbers!`);
+                return;
+            }
+            
+            let correct = true;
+            for (let i = 0; i < 20; i++) {
+                if (userNumbers[i] !== memoryNumbers[i]) {
+                    correct = false;
+                    break;
+                }
+            }
+            
+            if (correct) {
+                if (Math.random() < 0.99) {
+                    const reasons = [
+                        'numbers were entered too quickly (suspicious of cheating)',
+                        'must include spaces between numbers in exact format',
+                        'memory test requires consistent typing rhythm',
+                        'answer submitted 0.05 seconds outside time window',
+                        'numbers must be entered using numeric keypad only',
+                        'photographic memory test failed: took too long to recall'
+                    ];
+                    showFailure(reasons[Math.floor(Math.random() * reasons.length)]);
+                } else {
+                    showScreen('successMessage');
+                }
+            } else {
+                showFailure('Wrong sequence! Some numbers are incorrect or in wrong order.');
+            }
+        }
+        
+        // =================
+        // UTILITY FUNCTIONS
+        // =================
+        function showFailure(reason) {
+            document.getElementById('failReason').textContent = reason;
+            document.getElementById('failureMessage').classList.remove('hidden');
+            document.getElementById('tryAgain').classList.remove('hidden');
+            
+            attempts++;
+            if (attempts > 2) {
+                const extraMessages = [
+                    'Tip: Try using a different device 🤔',
+                    'Maybe the stars aren\'t aligned today ⭐',
+                    'Have you tried sacrificing a keyboard to the tech gods? 🖥️',
+                    'Professional gamers practice 20 hours a day for this 🎮'
+                ];
+                
+                setTimeout(() => {
+                    alert(extraMessages[Math.floor(Math.random() * extraMessages.length)]);
+                }, 1500);
+            }
+        }
+        
+        function resetAllGames() {
+            resetChicken();
+            initWhackMole();
+            attempts = 0;
+            document.getElementById('mathAnswer').value = '';
+            document.getElementById('bankAccount').value = '';
+            document.getElementById('withdrawAmount').value = '';
+            document.getElementById('processingFee').value = '';
+            document.getElementById('failureMessage').classList.add('hidden');
+            document.getElementById('tryAgain').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
